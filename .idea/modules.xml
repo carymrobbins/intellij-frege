@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/frege-bindings/frege-bindings.iml" filepath="$PROJECT_DIR$/frege-bindings/frege-bindings.iml" />
+      <module fileurl="file://$PROJECT_DIR$/frege-lib/frege-lib.iml" filepath="$PROJECT_DIR$/frege-lib/frege-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-frege.iml" filepath="$PROJECT_DIR$/intellij-frege.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java-lib/java-lib.iml" filepath="$PROJECT_DIR$/java-lib/java-lib.iml" />
+    </modules>
+  </component>
+</project>

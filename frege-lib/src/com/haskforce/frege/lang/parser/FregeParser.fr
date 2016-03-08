@@ -1,0 +1,11 @@
+module com.haskforce.frege.lang.parser.FregeParser where
+
+import com.haskforce.frege.bindings.Intellij
+import com.haskforce.frege.utils.Monad
+
+psiParse :: IElementType -> Mutable s PsiBuilder -> STMutable s ASTNode
+psiParse root builder = do
+  marker <- builder.mark
+  whileM_ (fmap not (builder.eof)) (builder.advanceLexer)
+  marker.done root
+  builder.getTreeBuilt

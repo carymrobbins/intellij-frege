@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -e
+
+source "$(dirname "$0")/common"
+
+frege_modules=(
+  "frege-bindings"
+  "frege-lib"
+)
+
+if [ -z "$FREGE_JAR" ]; then
+  >&2 echo "Could not find frege jar"
+  exit 1
+fi
+
+for m in "${frege_modules[@]}"; do
+  echo "Compiling frege module: $m"
+
+  src_dir="$base_dir/$m/src"
+  target_dir="$base_dir/out/production/$m"
+
+  frege_sources=()
+  while IFS=  read -r -d $'\0'; do
+    frege_sources+=("$REPLY")
+  done < <(find "$src_dir" -name "*.fr" -print0)
+
+  if [ ${#frege_sources[@]} -eq 0 ]; then
+    >&2 echo "WARN: No frege sources found in: $src_dir"
+  fi
+
+  # Speed up compile times by using -make mode and not cleaning
+  # log "Cleaning $target_dir"
+  # rm -rf "$target_dir"
+  mkdir -p "$target_dir"
+
+  echo "Compiling frege sources"
+  $JAVA \
+    -Xss2m \
+    -Dfrege.javac="$JAVAC -source 1.8 -target 1.8" \
+    -jar "$FREGE_JAR" \
+    -make \
+    -ascii \
+    -latin \
+    -fp "$classpath" \
+    -d "$target_dir" \
+    "${frege_sources[@]}" 2>&1
+
+  # NOTE: Not copying generated sources as they are way too complex
+  # apparently for IntelliJ to handle.
+  #
+  # Copy generated Java source to the module's gen/ directory
+  # to simplify IDE support.
+  # echo "Syncing generated java sources"
+  # (
+  #   cd "$target_dir"
+  #   rsync -avz --delete --update --include="*/" --include="*.java" --exclude="*" . "$gen_dir"
+  # )
+
+done

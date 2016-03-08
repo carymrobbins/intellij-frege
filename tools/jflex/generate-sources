@@ -1,0 +1,18 @@
+#!/bin/bash
+
+my_dir=$(cd "$(dirname "$0")"; pwd)
+jflex_jar=$my_dir/jflex-1.7.0-SNAPSHOT.jar
+skeleton_file=$my_dir/idea-flex.skeleton
+
+project_dir=$(cd "$(dirname "$0")"/../..; pwd)
+lexer_dir=$project_dir/java-lib/src/com/haskforce/frege/lang/lexer
+
+flex_files=(
+  "$lexer_dir/_FregeSyntaxHighlightingLexer.flex"
+  "$lexer_dir/_FregeParsingLexer.flex"
+)
+
+for f in "${flex_files[@]}"; do
+  echo "Generating lexer from $f"
+  java -jar "$jflex_jar" --skel "$skeleton_file" --nobak "$f"
+done

@@ -1,0 +1,20 @@
+module com.haskforce.frege.bindings.Intellij where
+
+data Project = native com.intellij.openapi.project.Project where
+  native getName :: Mutable s Project -> ST s String
+
+data ASTNode = native com.intellij.lang.ASTNode
+
+data PsiBuilder = native com.intellij.lang.PsiBuilder where
+  native getProject :: Mutable s PsiBuilder -> STMutable s Project
+  native advanceLexer :: Mutable s PsiBuilder -> ST s ()
+  native mark :: Mutable s PsiBuilder -> STMutable s PsiBuilderMarker
+  native eof :: Mutable s PsiBuilder -> ST s Bool
+  native getTreeBuilt :: Mutable s PsiBuilder -> STMutable s ASTNode
+
+data PsiBuilderMarker = native com.intellij.lang.PsiBuilder.Marker where
+  native done :: Mutable s PsiBuilderMarker -> IElementType -> ST s ()
+
+data PsiParser = native com.intellij.lang.PsiParser
+
+data IElementType = pure native com.intellij.psi.tree.IElementType

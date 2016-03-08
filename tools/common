@@ -1,0 +1,47 @@
+#!/bin/bash
+
+set -e
+
+# Source this file in a tools/ script by using:
+# source "$(dirname "$0")/common"
+
+find_file() {
+  local directory=$1
+  local pattern=$2
+
+  local found=$(find "$directory" -name "$pattern")
+  local count=$(wc -l <<< "$file")
+  if [ -z "$found" ]; then
+    >&2 echo "Could not find '$pattern' in '$directory'"
+    exit 1
+  elif [ "$count" -ne 1 ]; then
+    >&2 echo "Expected 1 file for '$pattern' in '$directory', found: $count"
+    >&2 echo "$found"
+    exit 1
+  fi
+  echo "$found"
+}
+
+base_dir=$(cd "$(dirname "$0")"/.. && echo $PWD)
+local_lib_dir="$base_dir/lib"
+
+# Variables that can be overridden
+: ${IDEA_HOME:=$(readlink -f "$HOME/opt/idea")}
+: ${FREGE_JAR:=$(find_file "$local_lib_dir" 'frege[0-9]*.jar')}
+: ${JAVA:=/usr/lib/jvm/java-9-oracle/bin/java}
+: ${JAVAC:=/usr/lib/jvm/java-9-oracle/bin/javac}
+
+idea_jars=$(find "$IDEA_HOME/lib" -name "*.jar")
+local_jars=$(find "$local_lib_dir" -name "*.jar")
+production_classes=$(find "$base_dir/out/production" -maxdepth 1 -type d)
+classpath=${idea_jars//$'\n'/:}:${local_jars//$'\n'/:}:${production_classes//$'\n'/:}
+
+# Validate FREGE_JAR
+if [ -z "$FREGE_JAR" ]; then
+  >&2 echo "Could not find frege jar"
+  exit 1
+elif [ "$(wc -l <<< "$FREGE_JAR")"  -ne 1 ]; then
+  >&2 echo "Expected one frege jar, got:"
+  >&2 echo "$FREGE_JAR"
+  exit 1
+fi

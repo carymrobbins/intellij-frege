@@ -1,0 +1,11 @@
+module Main where
+
+import Data.List
+
+main _ = do
+  println foo
+  println msg
+  where
+  foo = "bar"
+
+msg = Data.List.head ["Hello World"]

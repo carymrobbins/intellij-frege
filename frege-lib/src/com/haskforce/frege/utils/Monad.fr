@@ -1,0 +1,9 @@
+module com.haskforce.frege.utils.Monad where
+
+whileM_ :: Monad m => m Bool -> m a -> m ()
+whileM_ p f = go
+  where
+  go = do
+    x <- p
+    if x then f >> go else return ()
+

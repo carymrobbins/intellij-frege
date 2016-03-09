@@ -1,3 +1,0 @@
--- http://mmhelloworld.blogspot.com/2012/02/hello-world-frege.html
-module Main where
-main _ = println "Hello World"

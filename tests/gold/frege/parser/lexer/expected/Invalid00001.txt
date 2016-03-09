@@ -1,0 +1,11 @@
+PACKAGE ('module') 0-6
+WHITE_SPACE (' ') 6-7
+CONID ('Invalid') 7-14
+WHITE_SPACE (' ') 14-15
+VARID ('wher') 15-19
+WHITE_SPACE ('\n\n') 19-21
+VARID ('cats') 21-25
+WHITE_SPACE (' ') 25-26
+CHAR ('=') 26-27
+WHITE_SPACE (' ') 27-28
+STRCONST ('"dogs"') 28-34

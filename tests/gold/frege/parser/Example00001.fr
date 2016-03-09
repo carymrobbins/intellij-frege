@@ -1,0 +1,7 @@
+module Main where
+
+import Data.List
+
+msg = Data.List.head ["Hello World"]
+
+main _ = println msg

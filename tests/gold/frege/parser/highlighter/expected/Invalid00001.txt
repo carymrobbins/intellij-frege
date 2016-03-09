@@ -1,0 +1,11 @@
+KEYWORD ('module') 0-6
+WHITE_SPACE (' ') 6-7
+IDENT ('Invalid') 7-14
+WHITE_SPACE (' ') 14-15
+IDENT ('wher') 15-19
+WHITE_SPACE ('\n\n') 19-21
+IDENT ('cats') 21-25
+WHITE_SPACE (' ') 25-26
+OPERATOR ('=') 26-27
+WHITE_SPACE (' ') 27-28
+STRING_LITERAL ('"dogs"') 28-34

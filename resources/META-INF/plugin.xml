@@ -23,7 +23,14 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
+    <!-- Frege support -->
+    <fileTypeFactory implementation="com.haskforce.frege.lang.FregeFileTypeFactory"/>
+    <lang.syntaxHighlighterFactory
+        language="Frege"
+        implementationClass="com.haskforce.frege.highlighter.FregeSyntaxHighlighterFactory"/>
+    <lang.parserDefinition
+        language="Frege"
+        implementationClass="com.haskforce.frege.lang.parser.FregeParserDefinition"/>
   </extensions>
 
   <actions>

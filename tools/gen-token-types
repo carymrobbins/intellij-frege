@@ -1,0 +1,83 @@
+#!/usr/bin/env python2
+
+import re
+from string import Template
+import sys
+
+SOURCE_FILE = 'resources/frege/TokenID.fr'
+GEN_FILE = 'src/com/haskforce/frege/lang/lexer/FregeTokenTypes.java'
+
+COMMENT_REGEX = re.compile("--.*")
+
+
+def main():
+    token_ids = get_token_ids()
+    gen = build_template(token_ids)
+    with open(GEN_FILE, 'w') as f:
+        f.write(gen)
+
+
+def get_token_ids():
+    with open(SOURCE_FILE) as f:
+        content = f.read()
+    content = COMMENT_REGEX.sub(" ", content)
+    content = content.replace("\n", " ")
+    parts = content.split('data TokenID =')
+    if len(parts) < 2:
+        error("Could not find 'data TokenID =' in source file")
+    content = parts[1].split('derive')[0]
+    return content.replace(" ", "").split("|")
+
+
+def error(msg):
+    sys.stderr.write(msg + '\n')
+    exit(1)
+
+
+def build_token_types(token_ids):
+    result = []
+    for token_id in token_ids:
+        result.append(
+            '  public static FregeTokenType {0} = new FregeTokenType("{0}");'.format(token_id)
+        )
+    return '\n'.join(result)
+
+
+def build_from_token(token_ids):
+    result = []
+    for token_id in token_ids:
+        result.append(
+            '    if (name.equals("{0}")) return {0};'.format(token_id)
+        )
+    return '\n'.join(result)
+
+
+def build_template(token_ids):
+    t = Template("""package com.haskforce.frege.lang.lexer;
+
+import frege.compiler.enums.TokenID;
+import frege.compiler.types.Tokens;
+
+// DO NOT MODIFY THIS FILE DIRECTLY
+// GENERATED FROM $script_name
+
+/** Token types used by the parsing lexer, NOT for syntax highlighting. */
+public abstract class FregeTokenTypes {
+$token_types
+
+  public static FregeTokenType fromToken(Tokens.TToken token) {
+    String name = TokenID.IShow_TokenID.show(token.mem$$tokid);
+$from_token
+    throw new RuntimeException("Unexpected TokenID: " + name);
+  }
+}
+""")
+    return t.substitute(
+        script_name=sys.argv[0],
+        token_types=build_token_types(token_ids),
+        from_token=build_from_token(token_ids)
+    )
+
+
+if __name__ == '__main__':
+    main()

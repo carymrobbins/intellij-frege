@@ -1,0 +1,35 @@
+KEYWORD ('module') 0-6
+WHITE_SPACE (' ') 6-7
+IDENT ('Main') 7-11
+WHITE_SPACE (' ') 11-12
+KEYWORD ('where') 12-17
+WHITE_SPACE ('\n\n') 17-19
+KEYWORD ('import') 19-25
+WHITE_SPACE (' ') 25-26
+IDENT ('Data') 26-30
+DOT ('.') 30-31
+IDENT ('List') 31-35
+WHITE_SPACE ('\n\n') 35-37
+IDENT ('msg') 37-40
+WHITE_SPACE (' ') 40-41
+OPERATOR ('=') 41-42
+WHITE_SPACE (' ') 42-43
+IDENT ('Data') 43-47
+DOT ('.') 47-48
+IDENT ('List') 48-52
+DOT ('.') 52-53
+IDENT ('head') 53-57
+WHITE_SPACE (' ') 57-58
+LBRACKET ('[') 58-59
+STRING_LITERAL ('"Hello World"') 59-72
+RBRACKET (']') 72-73
+WHITE_SPACE ('\n\n') 73-75
+IDENT ('main') 75-79
+WHITE_SPACE (' ') 79-80
+IDENT ('_') 80-81
+WHITE_SPACE (' ') 81-82
+OPERATOR ('=') 82-83
+WHITE_SPACE (' ') 83-84
+IDENT ('println') 84-91
+WHITE_SPACE (' ') 91-92
+IDENT ('msg') 92-95

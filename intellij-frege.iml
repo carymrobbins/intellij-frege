@@ -12,6 +12,9 @@
         </propertiesSettings>
       </configuration>
     </facet>
+    <facet type="Python" name="Python">
+      <configuration sdkName="Python 2.7.6 (/usr/bin/python2.7)" />
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -31,5 +34,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Python 2.7.6 (/usr/bin/python2.7) interpreter library" level="application" />
   </component>
 </module>

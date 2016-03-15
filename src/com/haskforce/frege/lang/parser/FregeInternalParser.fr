@@ -1,0 +1,14 @@
+module com.haskforce.frege.lang.parser.FregeInternalParser where
+
+import frege.compiler.common.CompilerOptions
+import frege.compiler.common.Desugar
+import frege.compiler.grammar.Frege
+import frege.compiler.types.Tokens
+import frege.control.monad.State
+
+parse :: [Token] -> IO (Maybe ParseResult)
+parse tokens = do
+  global <- CompilerOptions.standardGlobal
+  let parserState = Frege.pass tokens
+  let parseResult = State.evalState parserState global
+  return parseResult

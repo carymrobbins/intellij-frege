@@ -21,10 +21,15 @@ public class FregeFlexParsingLexer implements FlexLexer {
 
   // Result values from the Frege Lexer.
   private CharSequence buffer;
+  private PreludeBase.TList<Tokens.TToken> lexerTokens;
   private PreludeBase.TList remainingTokens;
   private int tokenStart;
   private int tokenEnd;
   private boolean isReset = false;
+
+  public PreludeBase.TList<Tokens.TToken> getLexerTokens() {
+    return lexerTokens;
+  }
 
   /* The Frege Lexer doesn't seem to need state, so this method does nothing. */
   public void yybegin(int state) {}
@@ -52,9 +57,16 @@ public class FregeFlexParsingLexer implements FlexLexer {
   @Override
   public IElementType advance() throws IOException {
     Tokens.TToken nextToken = peekNext();
+    // Skip any tokens that are on the same offset.  These may be synthetic tokens.
+    // NOTE: The PsiParser will have to properly handle this behavior!
+    while (nextToken != null && nextToken.mem$offset == tokenStart) {
+      advanceToken();
+      nextToken = peekNext();
+    }
 
     // Whitespace-only file
     if (isReset && nextToken == null) {
+      isReset = false;
       tokenEnd = buffer.length();
       return TokenType.WHITE_SPACE;
     }
@@ -72,20 +84,26 @@ public class FregeFlexParsingLexer implements FlexLexer {
     }
 
     // Inject whitespace tokens
-    if (tokenEnd < nextToken.mem$offset) {
+    if (tokenEnd < nextToken.mem$offset && nextToken.mem$offset != Integer.MAX_VALUE) {
       tokenStart = tokenEnd;
       tokenEnd = nextToken.mem$offset;
       return TokenType.WHITE_SPACE;
     }
 
-    tokenStart = nextToken.mem$offset;
-    tokenEnd = nextToken.mem$offset + Tokens.TToken.length(nextToken);
+    if (nextToken.mem$offset == Integer.MAX_VALUE) {
+      // This happens with an inferred closing brace at the end of the source file.
+      tokenStart = tokenEnd;
+      tokenEnd = buffer.length();
+//      atEnd = true;
+    } if (isSynthetic(nextToken)) {
+      // Synthetic tokens should have zero length.
+      tokenStart = tokenEnd;
+    } else {
+      tokenStart = nextToken.mem$offset;
+      tokenEnd = nextToken.mem$offset + Tokens.TToken.length(nextToken);
+    }
 
-    PreludeBase.TList.DCons lexCons = remainingTokens._Cons();
-    // This shouldn't be null since we've already peeked at the next token.
-    if (lexCons == null) throw new RuntimeException("lexCons was unexpectedly null");
-    remainingTokens = lexCons.mem2.<PreludeBase.TList>forced();
-
+    advanceToken();
     return FregeTokenTypes.fromToken(nextToken);
   }
 
@@ -95,31 +113,43 @@ public class FregeFlexParsingLexer implements FlexLexer {
     // Ignoring start and end
     isReset = true;
     buffer = buf;
-    remainingTokens = Lexer.lex(buffer, 0, 0, 0).<PreludeBase.TList>forced();
+    lexerTokens = Lexer.lexer(buffer).call();
+    remainingTokens = lexerTokens.call();
     tokenStart = 0;
     tokenEnd = 0;
   }
 
   @Nullable
   private Tokens.TToken peekNext() {
-    PreludeBase.TList.DCons cons = remainingTokens._Cons();
+    PreludeBase.TList.DCons cons = remainingTokens.asCons();
     if (cons == null) return null;
-    if (cons.mem1 instanceof Tokens.TToken) return (Tokens.TToken)cons.mem1;
-    // TODO: How is this possible?
-    System.err.println("cons.mem1 is not a TToken: " + cons.mem1);
-    return null;
+    Object tok = cons.mem1.call();
+    if (tok instanceof Tokens.TToken) return (Tokens.TToken)tok;
+    throw new RuntimeException("tok is not a TToken: " + tok);
+  }
+
+  private void advanceToken() {
+    PreludeBase.TList.DCons lexCons = remainingTokens.asCons();
+    // This shouldn't be null since we've already peeked at the next token.
+    if (lexCons == null) throw new RuntimeException("lexCons was unexpectedly null");
+    remainingTokens = (PreludeBase.TList)lexCons.mem2.call();
+  }
+
+  public static boolean isSynthetic(Tokens.TToken token) {
+    return token.mem$col == 0;
   }
 
   /** Method used for debugging tokens from Frege's Lexer. */
-  private void printTokens() {
-    PreludeBase.TList.DCons cons = remainingTokens._Cons();
-    System.out.println("********* tokens ==> [");
+  public void printTokens(int id) {
+    PreludeBase.TList.DCons<Tokens.TToken> cons = lexerTokens.asCons();
+    System.out.println("********* [" + id + "] tokens ==> [");
     while (cons != null) {
-      Tokens.TToken token = (Tokens.TToken) cons.mem1;
+      Tokens.TToken token = cons.mem1.call();
       System.out.println(
-        "  " + token.mem$offset + "-" + (token.mem$offset + Tokens.TToken.length(token)) + ": " + token.mem$value
+        // "  [" + id + "] TOKEN <<< " + Tokens.IShow_Token.show(token) + " >>> " + token.mem$offset + "-" + (token.mem$offset + Tokens.TToken.length(token)) + ": " + token.mem$value
+        Tokens.IShow_Token.show(token)
       );
-      cons = cons.mem2.<PreludeBase.TList>forced()._Cons();
+      cons = (cons.mem2.call()).asCons();
     }
     System.out.println("]");
   }

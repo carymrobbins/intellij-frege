@@ -9,7 +9,13 @@ import com.intellij.lexer.FlexAdapter;
  * This is used specifically for parsing and NOT syntax highlighting.
  */
 public class FregeParsingLexer extends FlexAdapter {
+
   public FregeParsingLexer() {
     super(new FregeFlexParsingLexer());
+  }
+
+  @Override
+  public FregeFlexParsingLexer getFlex() {
+    return (FregeFlexParsingLexer)super.getFlex();
   }
 }

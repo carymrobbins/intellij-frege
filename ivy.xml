@@ -1,6 +1,9 @@
 <ivy-module version="2.0">
   <info organisation="com.haskforce" module="haskforce"/>
   <dependencies>
-    <dependency org="org.frege-lang" name="frege" rev="3.23.422-ga05a487" />
+    <!-- Using downloaded jar instead:
+         https://github.com/Frege/frege/releases/download/3.24alpha/frege3.23.901.jar
+     -->
+    <!--<dependency org="org.frege-lang" name="frege" rev="3.23.422-ga05a487" />-->
   </dependencies>
 </ivy-module>

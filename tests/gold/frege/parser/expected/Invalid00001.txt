@@ -1,0 +1,6 @@
+Frege file
+  PsiElement(CONID)('Invalid')
+  PsiElement(VARID)('wher')
+  PsiElement(VARID)('cats')
+  PsiElement(CHAR)('=')
+  PsiElement(STRCONST)('"dogs"')

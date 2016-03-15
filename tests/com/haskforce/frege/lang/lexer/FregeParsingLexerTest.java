@@ -15,6 +15,7 @@ public class FregeParsingLexerTest extends FregeLexerTestBase {
   @NotNull @Override protected String getExpectedPath() { return "lexer"; }
   @Override protected Lexer createLexer() { return new FregeParsingLexer(); }
 
+  public void testBlank00001() { doTest(); }
   public void testExample00001() { doTest(); }
   public void testExample00002() { doTest(); }
   public void testInvalid00001() { doTest(); }

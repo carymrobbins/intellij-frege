@@ -1,5 +1,4 @@
-PACKAGE ('module') 0-6
-WHITE_SPACE (' ') 6-7
+WHITE_SPACE ('module ') 0-7
 CONID ('Invalid') 7-14
 WHITE_SPACE (' ') 14-15
 VARID ('wher') 15-19

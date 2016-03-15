@@ -1,0 +1,33 @@
+#!/bin/bash
+
+base_dir=$(cd "$(dirname "$0")"/.. && echo $PWD)
+local_lib_dir="$base_dir/lib"
+frege_jar=${frege_jar:-"$(find "$local_lib_dir" -name "frege*.jar")"}
+idea_home=${idea_home:-"$HOME/opt/idea-IU-143.381.42"}
+idea_jars=$(find "$idea_home/lib" -name "*.jar")
+local_jars=$(find "$local_lib_dir" -name "*.jar")
+production_classes=$(find "$base_dir/out/production" -maxdepth 1 -type d)
+classpath=${idea_jars//$'\n'/:}:${local_jars//$'\n'/:}:${production_classes//$'\n'/:}
+
+src_dir="$base_dir/src"
+target_dir="$base_dir/gen"
+
+if [ -z "$frege_jar" ]; then
+  >&2 echo "Could not find frege jar"
+  exit 1
+fi
+
+frege_sources=()
+while IFS=  read -r -d $'\0'; do
+    frege_sources+=("$REPLY")
+done < <(find "$src_dir" -name "*.fr" -print0)
+
+if [ ${#frege_sources[@]} -eq 0 ]; then
+  >&2 echo "No frege sources found"
+  exit 1
+fi
+
+mkdir -p "$target_dir"
+rm -rf "$target_dir/*"
+
+java -jar "$frege_jar" -fp "$classpath" -d "$target_dir" "${frege_sources[@]}"

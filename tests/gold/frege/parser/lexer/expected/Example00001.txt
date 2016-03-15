@@ -1,14 +1,15 @@
-PACKAGE ('module') 0-6
-WHITE_SPACE (' ') 6-7
+WHITE_SPACE ('module ') 0-7
 CONID ('Main') 7-11
 WHITE_SPACE (' ') 11-12
 WHERE ('where') 12-17
+SYNTHETIC_LBRACE ('') 17-17
 WHITE_SPACE ('\n\n') 17-19
 IMPORT ('import') 19-25
 WHITE_SPACE (' ') 25-26
 QUALIFIER ('Data') 26-30
 WHITE_SPACE ('.') 30-31
 CONID ('List') 31-35
+SYNTHETIC_SEMICOLON ('') 35-35
 WHITE_SPACE ('\n\n') 35-37
 VARID ('msg') 37-40
 WHITE_SPACE (' ') 40-41
@@ -23,6 +24,7 @@ WHITE_SPACE (' ') 57-58
 CHAR ('[') 58-59
 STRCONST ('"Hello World"') 59-72
 CHAR (']') 72-73
+SYNTHETIC_SEMICOLON ('') 73-73
 WHITE_SPACE ('\n\n') 73-75
 VARID ('main') 75-79
 WHITE_SPACE (' ') 79-80
@@ -33,3 +35,4 @@ WHITE_SPACE (' ') 83-84
 VARID ('println') 84-91
 WHITE_SPACE (' ') 91-92
 VARID ('msg') 92-95
+SYNTHETIC_RBRACE ('') 95-95

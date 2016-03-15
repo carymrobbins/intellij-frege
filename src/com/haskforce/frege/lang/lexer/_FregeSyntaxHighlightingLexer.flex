@@ -30,7 +30,8 @@ BLOCK_COMMENT=\{-([^-]|-[^}])*-*\}
 IDENT=[A-Za-z_][A-Za-z0-9_]*
 INFIX_IDENT=`[^`]+`
 NUMBER_LIT=\-?[0-9]+(\.[0-9]+)?
-STRING_LIT=\"(\\\"|[^\"])*\"
+// Use ? at end to highlight unterminated strings.
+STRING_LIT=\"(\\\"|[^\"])*\"?
 CHAR_LIT=('\\''|'[^']')
 
 // HACK: If it's none of these, let's assume it's an operator.

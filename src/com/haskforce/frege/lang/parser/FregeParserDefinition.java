@@ -4,9 +4,9 @@ import com.haskforce.frege.lang.FregeLanguage;
 import com.haskforce.frege.lang.lexer.FregeParsingLexer;
 import com.haskforce.frege.lang.lexer.FregeTokenTypes;
 import com.haskforce.frege.lang.psi.FregeFile;
+import com.haskforce.frege.lang.psi.FregePsiTypes;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -20,13 +20,12 @@ import org.jetbrains.annotations.NotNull;
 
 /** Registers a parser and parsing lexer for Frege files. */
 public class FregeParserDefinition implements ParserDefinition {
-  public static final IFileElementType FILE =
-    new IFileElementType(Language.findInstance(FregeLanguage.class));
+  private static final IFileElementType FILE = new IFileElementType(FregeLanguage.INSTANCE);
 
   @NotNull
   @Override
   public Lexer createLexer(Project project) {
-    return new FregeParsingLexer();
+      return new FregeParsingLexer();
   }
 
   @Override
@@ -64,7 +63,7 @@ public class FregeParserDefinition implements ParserDefinition {
   @NotNull
   @Override
   public PsiElement createElement(ASTNode node) {
-    return new ASTWrapperPsiElement(node);
+    return FregePsiTypes.createElement(node);
   }
 
   @Override

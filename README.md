@@ -1,5 +1,7 @@
 # IntelliJ Support for Frege
 
+[![Join the chat at https://gitter.im/carymrobbins/intellij-frege](https://badges.gitter.im/carymrobbins/intellij-frege.svg)](https://gitter.im/carymrobbins/intellij-frege?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is an experiment to see how well Frege works for developing IntelliJ plugins.
 The plan is to develop the plugin _in_ Frege and, once it proves feasible, add the
 new functionality to [HaskForce](http://caryrobbins.com/intellij-haskforce/), allowing

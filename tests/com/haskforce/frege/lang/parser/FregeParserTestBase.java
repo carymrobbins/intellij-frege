@@ -1,7 +1,11 @@
 package com.haskforce.frege.lang.parser;
 
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.ParsingTestCase;
+import org.jetbrains.annotations.NonNls;
+
+import java.io.IOException;
 
 /** Helper class for defining Frege parser tests. */
 public abstract class FregeParserTestBase extends ParsingTestCase {
@@ -10,7 +14,7 @@ public abstract class FregeParserTestBase extends ParsingTestCase {
     super(FileUtil.join("frege", "parser"), "fr", false, new FregeParserDefinition());
   }
 
-  protected void doTest() {
+  void doTest() {
     doTest(true);
   }
 
@@ -22,5 +26,10 @@ public abstract class FregeParserTestBase extends ParsingTestCase {
   @Override
   protected boolean skipSpaces() {
     return true;
+  }
+
+  @Override
+  protected void checkResult(@NonNls String targetDataName, PsiFile file) throws IOException {
+    super.checkResult(FileUtil.join("expected", targetDataName), file);
   }
 }

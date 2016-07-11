@@ -8,6 +8,8 @@ data ASTNode = native com.intellij.lang.ASTNode
 data PsiBuilder = native com.intellij.lang.PsiBuilder where
   native getProject :: Mutable s PsiBuilder -> STMutable s Project
   native advanceLexer :: Mutable s PsiBuilder -> ST s ()
+  native getTokenType :: Mutable s PsiBuilder -> ST s IElementType
+  native remapCurrentToken :: Mutable s PsiBuilder -> IElementType -> ST s ()
   native mark :: Mutable s PsiBuilder -> STMutable s PsiBuilderMarker
   native eof :: Mutable s PsiBuilder -> ST s Bool
   native getTreeBuilt :: Mutable s PsiBuilder -> STMutable s ASTNode
@@ -18,3 +20,7 @@ data PsiBuilderMarker = native com.intellij.lang.PsiBuilder.Marker where
 data PsiParser = native com.intellij.lang.PsiParser
 
 data IElementType = pure native com.intellij.psi.tree.IElementType
+
+pure native tokenType_WHITE_SPACE com.intellij.psi.TokenType.WHITE_SPACE :: IElementType
+pure native tokenType_BAD_CHARACTER com.intellij.psi.TokenType.BAD_CHARACTER :: IElementType
+

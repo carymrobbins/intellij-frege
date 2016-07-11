@@ -1,0 +1,8 @@
+Frege file
+  PsiElement(MODULE)('module')
+  PsiElement(IDENT)('Invalid')
+  PsiElement(IDENT)('wher')
+  PsiElement(EOL)('\n')
+  PsiElement(IDENT)('cats')
+  PsiElement(=)('=')
+  PsiElement(STRING_LITERAL)('"dogs"')

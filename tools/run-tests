@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+source "$(dirname "$0")/common"
+
+test_classes=$(find "$base_dir/out/test" -maxdepth 1 -type d)
+test_classpath=${classpath}:${test_classes/$'\n'/:}
+
+test_case=${1:-org.haskforce.frege.FregeTestCase}
+
+java -cp "$test_classpath" org.junit.runner.JUnitCore "$test_case"

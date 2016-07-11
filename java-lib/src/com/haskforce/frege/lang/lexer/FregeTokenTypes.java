@@ -5,7 +5,9 @@ import com.intellij.psi.tree.IElementType;
 /** Token types used by the parsing lexer, NOT for syntax highlighting. */
 public abstract class FregeTokenTypes {
 
+  // Re-exported tokens
   public static IElementType WHITE_SPACE = com.intellij.psi.TokenType.WHITE_SPACE;
+  public static IElementType BAD_CHAR = com.intellij.psi.TokenType.BAD_CHARACTER;
 
   // COMMENTS
   public static FregeTokenType LINE_COMMENT = new FregeTokenType("LINE_COMMENT");
@@ -74,5 +76,4 @@ public abstract class FregeTokenTypes {
   public static FregeTokenType EOL = new FregeTokenType("EOL");
   public static FregeTokenType INDENT = new FregeTokenType("INDENT");
   public static FregeTokenType DEDENT = new FregeTokenType("DEDENT");
-  public static FregeTokenType BAD_CHAR = new FregeTokenType("BAD_CHAR");
 }

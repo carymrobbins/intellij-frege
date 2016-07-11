@@ -1,0 +1,53 @@
+module com.haskforce.frege.lang.parser.Builder where
+
+import com.haskforce.frege.bindings.Intellij
+
+--- This module introduces a Builder Monad which wraps IntelliJ's PsiBuilder
+
+data Builder s a = Builder { run :: Mutable s PsiBuilder -> ST s a }
+
+instance Monad (Builder s) where
+
+  pure x = Builder $ \_ -> return x
+
+  Builder f >>= g = Builder $ \psiBuilder -> do
+    fResult <- f psiBuilder
+    let gBuilder = g fResult
+    gBuilder.run psiBuilder
+
+data MarkResult
+  = MarkDone IElementType
+  | MarkCollapse IElementType
+  | MarkError String
+
+--- Monadic variants of PsiBuilderMarker methods.
+
+mark :: Builder s (MarkResult, a) -> Builder s a
+mark (Builder f) = Builder $ \b -> do
+  psiMarker <- b.mark
+  (markResult, parseResult) <- f b
+  handleResult psiMarker markResult
+  return parseResult
+ where
+  handleResult psiMarker markResult = case markResult of
+    MarkDone el -> psiMarker.done el
+    MarkCollapse el -> psiMarker.collapse el
+    MarkError msg -> psiMarker.error msg
+
+done :: Monad m => IElementType -> m (MarkResult, ())
+done el = return (MarkDone el, ())
+
+--- Monadic variants of PsiBuilder methods.
+
+getTreeBuilt :: Builder s (Mutable s ASTNode)
+getTreeBuilt = Builder $ _.getTreeBuilt
+
+isEOF :: Builder s Bool
+isEOF = Builder $ _.eof
+
+advanceLexer :: Builder s ()
+advanceLexer = Builder $ _.advanceLexer
+
+--- Lift an ST action into the Builder monad.
+builderFromST :: ST s a -> Builder s a
+builderFromST st = Builder $ \_ -> st

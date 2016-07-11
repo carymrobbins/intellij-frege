@@ -16,6 +16,8 @@ data PsiBuilder = native com.intellij.lang.PsiBuilder where
 
 data PsiBuilderMarker = native com.intellij.lang.PsiBuilder.Marker where
   native done :: Mutable s PsiBuilderMarker -> IElementType -> ST s ()
+  native collapse :: Mutable s PsiBuilderMarker -> IElementType -> ST s ()
+  native error :: Mutable s PsiBuilderMarker -> String -> ST s ()
 
 data PsiParser = native com.intellij.lang.PsiParser
 
@@ -23,4 +25,3 @@ data IElementType = pure native com.intellij.psi.tree.IElementType
 
 pure native tokenType_WHITE_SPACE com.intellij.psi.TokenType.WHITE_SPACE :: IElementType
 pure native tokenType_BAD_CHARACTER com.intellij.psi.TokenType.BAD_CHARACTER :: IElementType
-

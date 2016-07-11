@@ -1,14 +1,19 @@
 module com.haskforce.frege.lang.parser.FregeParser where
 
 import com.haskforce.frege.bindings.Intellij
+import com.haskforce.frege.lang.parser.Builder
 import com.haskforce.frege.utils.Monad
 
-psiParse :: IElementType -> Mutable s PsiBuilder -> STMutable s ASTNode
-psiParse = dummyParse
+--- Function to be called by Java code to implement the PsiParser
+psiParse :: IElementType -> Mutable s PsiBuilder -> ST s (Mutable s ASTNode)
+psiParse !root !builder = (top root).run builder
 
-dummyParse :: IElementType -> Mutable s PsiBuilder -> STMutable s ASTNode
-dummyParse root builder = do
-  marker <- builder.mark
-  whileM_ (fmap not builder.eof) builder.advanceLexer
-  marker.done root
-  builder.getTreeBuilt
+top :: IElementType -> Builder s (Mutable s ASTNode)
+top root = do
+  consumeUntilEOF root
+  getTreeBuilt
+
+consumeUntilEOF root = mark $ do
+  whileM_ (fmap not isEOF) advanceLexer
+  done root
+

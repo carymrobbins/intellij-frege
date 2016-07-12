@@ -31,10 +31,13 @@ local_lib_dir="$base_dir/lib"
 : ${JAVA:=/usr/lib/jvm/java-9-oracle/bin/java}
 : ${JAVAC:=/usr/lib/jvm/java-9-oracle/bin/javac}
 
-idea_jars=$(find "$IDEA_HOME/lib" -name "*.jar")
-local_jars=$(find "$local_lib_dir" -name "*.jar")
-production_classes=$(find "$base_dir/out/production" -maxdepth 1 -type d)
-classpath=${idea_jars//$'\n'/:}:${local_jars//$'\n'/:}:${production_classes//$'\n'/:}
+get_classpath() {
+  local idea_jars=$(find "$IDEA_HOME/lib" -name "*.jar")
+  local local_jars=$(find "$local_lib_dir" -name "*.jar")
+  local production_classes=$(find "$base_dir/out/production" -maxdepth 1 -type d)
+  local classpath=${idea_jars//$'\n'/:}:${local_jars//$'\n'/:}:${production_classes//$'\n'/:}
+  echo "$classpath"
+}
 
 # Validate FREGE_JAR
 if [ -z "$FREGE_JAR" ]; then

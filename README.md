@@ -14,6 +14,11 @@ internal lexer and parser as much as possible, which is one goal of this project
 
 ## Building
 
+The simplest way to build is to run `make` from the command line. The `Makefile` is just
+a temporary convenience to hold us over until we get something like Gradle configured.
+
+Here's the long way -
+
 1. Configure the Project SDK.
   * Go to **File > Project Structure > Project Settings > Project**
   * Ensure you have an **Intellij IDEA** SDK configured for **Project SDK**.
@@ -27,6 +32,11 @@ internal lexer and parser as much as possible, which is one goal of this project
 
 1. Generate the Frege parser tokens by running `tools/gen-tokens`
 
+1. Highlight the following modules and choose **Build > Make Selected Modules**
+  * java-lib
+  * jps-lib
+  * jps-plugin
+
 1. Compile Frege sources by running `tools/fregec` with the
    following environment variables -
       * **FREGE_JAR** - (optional) path to Frege jar (defaults to `lib/frege*.jar`)
@@ -34,9 +44,14 @@ internal lexer and parser as much as possible, which is one goal of this project
       * **JAVA** - path to `java` executable
       * **JAVAC** - path to `javac` executable
 
-1. Compile Java sources using the IDE (**Build > Make Project**)
+1. Compile the remaining Java sources using the IDE (**Build > Make Project**)
 
 ## Running the Test Suite
 
-1. Open **FregeTestCase.java**, right-click on the class name, and choose
+Ideally you could do the following -
+
+* Open **FregeTestCase.java**, right-click on the class name, and choose
     **Run 'FregeTestCase'**
+
+However, IntelliJ's test runner doesn't seem to play nice with Frege (see issue #3).
+In the meantime, you can use the `tools/run-tests` script from the command line.

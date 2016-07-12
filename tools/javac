@@ -1,0 +1,88 @@
+#!/bin/bash
+
+set -e
+
+source "$(dirname "$0")/common"
+
+usage() {
+  echo "Usage: $0 [java-module1] [java-module2] ..."
+}
+
+if [ "$1" = "--help" ]; then
+  usage
+  exit
+fi
+
+if [ $# -eq 0 ]; then
+  >&2 usage
+  exit 1
+fi
+
+java_modules=()
+for arg in "$@"; do
+  java_modules+=("$arg")
+done
+
+run_javac() {
+  local src_dir=$1
+  local target_dir=$2
+
+  java_sources=()
+  while IFS=  read -r -d $'\0'; do
+    java_sources+=("$REPLY")
+  done < <(find "$src_dir" -name "*.java" -print0)
+
+  if [ ${#java_sources[@]} -eq 0 ]; then
+    >&2 echo "WARN: No java sources found in: $src_dir"
+    return
+  fi
+
+  mkdir -p "$target_dir"
+
+  echo "Compiling java sources"
+  if [ "$m" = "jps-lib" -o "$m" = "jps-plugin" ]; then
+    # The external builder requires Java 6.
+    source_v=1.6
+    target_v=1.6
+  else
+    source_v=1.8
+    target_v=1.8
+  fi
+  $JAVAC -source "$source_v" -target "$target_v" \
+    -cp "$(get_classpath)" \
+    -d "$target_dir" \
+    "${java_sources[@]}"
+}
+
+for m in "${java_modules[@]}"; do
+  if [ ! -d "$m" ]; then
+    >&2 echo "ERROR: Directory $m does not exist!"
+    exit 1
+  fi
+  module_name=$(cd "$m"; basename "$PWD")
+  echo "Compiling java module: $module_name"
+
+  src_dir="$base_dir/$m/src"
+  target_dir="$base_dir/out/production/$module_name"
+
+  run_javac "$src_dir" "$target_dir"
+
+  # Do the same for tests, if applicable.
+  src_dir="$base_dir/$m/tests"
+  target_dir="$base_dir/out/test/$module_name"
+  if [ -d "$src_dir" ]; then
+    run_javac "$src_dir" "$target_dir"
+
+    # For test data files
+    # gold_dir="$src_dir/gold"
+    # if [ -d "$gold_dir" ]; then
+    #   cp -r "$gold_dir" "$target_dir"
+    # fi
+  fi
+
+  # Copy resources, if applicable
+  # resources_dir="$base_dir/$m/resources"
+  # if [ -d "$resources_dir" ]; then
+  #   cp -r "$resources_dir/*" "$base_dir/out/production"
+  # fi
+done

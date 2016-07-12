@@ -4,10 +4,24 @@ set -e
 
 source "$(dirname "$0")/common"
 
-frege_modules=(
-  "frege-bindings"
-  "frege-lib"
-)
+if [ "$1" = "--help" ]; then
+  echo "Usage: $0 [frege-module1] [frege-module2] ..."
+  exit
+fi
+
+if [ $# -eq 0 ]; then
+  # Default to all frege modules.
+  frege_modules=(
+    "frege-bindings"
+    "frege-lib"
+  )
+else
+  # Only build specified frege modules.
+  frege_modules=()
+  for arg in "$@"; do
+    frege_modules+=("$arg")
+  done
+fi
 
 if [ -z "$FREGE_JAR" ]; then
   >&2 echo "Could not find frege jar"
@@ -42,7 +56,7 @@ for m in "${frege_modules[@]}"; do
     -make \
     -ascii \
     -latin \
-    -fp "$classpath" \
+    -fp "$(get_classpath)" \
     -d "$target_dir" \
     "${frege_sources[@]}" 2>&1
 

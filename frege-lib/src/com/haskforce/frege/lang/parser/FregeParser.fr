@@ -10,20 +10,31 @@ psiParse :: IElementType -> Mutable s PsiBuilder -> ST s (Mutable s ASTNode)
 psiParse !root !psiBuilder = builder.run psiBuilder
  where
   builder = do
-    mark $ top >> done root
+    markStart $ top >> markDone root
     getTreeBuilt
 
-top :: Builder s ()
 top = do
-  moduleDecl
+  parseModuleDecl
   consumeUntilEOF
 
-moduleDecl = whenTokenIs (== ttMODULE) $ mark $ do
+parseModuleDecl = whenTokenIs (== ttMODULE) $ markStart $ do
   advanceLexer
-  whenTokenIs (/= ttIDENT) $ builderError "Expected IDENT"
-  advanceLexer
-  whenTokenIs (/= ttWHERE) $ builderError "Expected WHERE"
-  advanceLexer
-  done ttMODULE_DECL
+  parseModuleName
+  expectTokenAdvance ttWHERE
+  markDone ttMODULE_DECL
 
-consumeUntilEOF = whileM_ (not <$> isEOF) advanceLexer
+parseModuleName = markStart $ do
+  t <- getTokenType
+  advanceLexer
+  if t /= ttIDENT then do
+    markError "Expected module name"
+  else do
+    advanceWhile pred advanceLexer
+    markDone ttMODULE_NAME
+ where
+  pred = do
+    x <- getTokenType
+    y <- lookAhead 1
+    return $ (x, y) == (ttDOT, ttIDENT)
+
+consumeUntilEOF = advanceWhile (return true) $ return ()

@@ -2,6 +2,7 @@ package com.haskforce.frege.lang.parser;
 
 import com.haskforce.frege.lang.FregeLanguage;
 import com.haskforce.frege.lang.lexer.FregeParsingLexer;
+import com.haskforce.frege.lang.psi.FregeElementFactory;
 import com.haskforce.frege.lang.psi.FregeFile;
 import com.haskforce.frege.lang.psi.FregeTokenTypes;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
@@ -43,8 +44,12 @@ public class FregeParserDefinition implements ParserDefinition {
   @NotNull
   @Override
   public TokenSet getWhitespaceTokens() {
-    return TokenSet.EMPTY;
+    return whitespaceTokens;
   }
+
+  private static TokenSet whitespaceTokens = TokenSet.create(
+    FregeTokenTypes.WHITE_SPACE
+  );
 
   @NotNull
   @Override
@@ -71,7 +76,7 @@ public class FregeParserDefinition implements ParserDefinition {
   @NotNull
   @Override
   public PsiElement createElement(ASTNode node) {
-    return new ASTWrapperPsiElement(node);
+    return FregeElementFactory.createElement(node);
   }
 
   @Override

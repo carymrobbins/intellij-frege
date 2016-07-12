@@ -1,6 +1,7 @@
 module com.haskforce.frege.lang.parser.Builder where
 
 import com.haskforce.frege.bindings.Intellij
+import com.haskforce.frege.utils.Monad
 
 --- This module introduces a Builder Monad which wraps IntelliJ's PsiBuilder
 
@@ -22,8 +23,8 @@ data MarkResult
 
 --- Monadic variants of PsiBuilderMarker methods.
 
-mark :: Builder s (MarkResult, a) -> Builder s a
-mark (Builder f) = Builder $ \b -> do
+markStart :: Builder s (MarkResult, a) -> Builder s a
+markStart (Builder f) = Builder $ \b -> do
   psiMarker <- b.mark
   (markResult, parseResult) <- f b
   handleResult psiMarker markResult
@@ -34,10 +35,16 @@ mark (Builder f) = Builder $ \b -> do
     MarkCollapse el -> psiMarker.collapse el
     MarkError msg -> psiMarker.error msg
 
-done :: Monad m => IElementType -> m (MarkResult, ())
-done el = return (MarkDone el, ())
+markDone :: Monad m => IElementType -> m (MarkResult, ())
+markDone el = return (MarkDone el, ())
+
+markError :: Monad m => String -> m (MarkResult, ())
+markError msg = return (MarkError msg, ())
 
 --- Monadic variants of PsiBuilder methods.
+
+lookAhead :: Int -> Builder s IElementType
+lookAhead n = Builder $ _.lookAhead n
 
 getTreeBuilt :: Builder s (Mutable s ASTNode)
 getTreeBuilt = Builder $ _.getTreeBuilt
@@ -54,6 +61,25 @@ remapAdvance el = Builder (_.remapCurrentToken el) >> advanceLexer
 getTokenType :: Builder s IElementType
 getTokenType = Builder $ _.getTokenType
 
+expectTokenAdvance :: IElementType -> Builder s Bool
+expectTokenAdvance el =
+  expectAdvance ((el ==) <$> getTokenType) $ "Expected " ++ el.toString
+
+expectAdvance :: Builder s Bool -> String -> Builder s Bool
+expectAdvance p msg = do
+  x <- p
+  when (!x) $ builderError msg
+  advanceLexer
+  return x
+
+advanceWhile :: Builder s Bool -> Builder s () -> Builder s ()
+advanceWhile p b = whileM_ pred $ b >> advanceLexer
+ where
+  pred = do
+    eof <- isEOF
+    x <- p
+    return $ not eof && x
+
 whenTokenIs :: (IElementType -> Bool) -> Builder s () -> Builder s ()
 whenTokenIs p b = do
   el <- getTokenType
@@ -62,6 +88,10 @@ whenTokenIs p b = do
 builderError :: String -> Builder s ()
 builderError msg = Builder (_.error msg)
 
+--- Log a message to stdout.
+builderLog :: String -> Builder s ()
+builderLog msg = builderFromST $ void $ return $ traceLn msg
+
 --- Lift an ST action into the Builder monad.
 builderFromST :: ST s a -> Builder s a
-builderFromST st = Builder $ \_ -> st
+builderFromST st = Builder $ const st

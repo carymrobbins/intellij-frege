@@ -1,5 +1,7 @@
 module com.haskforce.frege.bindings.Intellij where
 
+import com.haskforce.frege.bindings.FregeUtils
+
 data Project = native com.intellij.openapi.project.Project where
   native getName :: Mutable s Project -> ST s String
 
@@ -9,6 +11,7 @@ data PsiBuilder = native com.intellij.lang.PsiBuilder where
   native getProject :: Mutable s PsiBuilder -> STMutable s Project
   native advanceLexer :: Mutable s PsiBuilder -> ST s ()
   native getTokenType :: Mutable s PsiBuilder -> ST s IElementType
+  native lookAhead :: Mutable s PsiBuilder -> Int -> ST s IElementType
   native remapCurrentToken :: Mutable s PsiBuilder -> IElementType -> ST s ()
   native mark :: Mutable s PsiBuilder -> STMutable s PsiBuilderMarker
   native error :: Mutable s PsiBuilder -> String -> ST s ()
@@ -23,8 +26,8 @@ data PsiBuilderMarker = native com.intellij.lang.PsiBuilder.Marker where
 data PsiParser = native com.intellij.lang.PsiParser
 
 data IElementType = pure native com.intellij.psi.tree.IElementType where
-  pure native equals :: IElementType -> Object -> Bool
   pure native hashCode :: IElementType -> Int
+  pure native toString :: IElementType -> String
 
 instance Eq IElementType where
-  x == y = x.equals y
+  x == y = objEquals x y

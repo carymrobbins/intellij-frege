@@ -79,4 +79,5 @@ public abstract class FregeTokenTypes {
 
   // PARSER ELEMENTS
   public static FregeElementType MODULE_DECL = new FregeElementType("MODULE_DECL");
+  public static FregeElementType MODULE_NAME = new FregeElementType("MODULE_NAME");
 }

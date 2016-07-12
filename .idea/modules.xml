@@ -6,6 +6,8 @@
       <module fileurl="file://$PROJECT_DIR$/frege-lib/frege-lib.iml" filepath="$PROJECT_DIR$/frege-lib/frege-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/intellij-frege.iml" filepath="$PROJECT_DIR$/intellij-frege.iml" />
       <module fileurl="file://$PROJECT_DIR$/java-lib/java-lib.iml" filepath="$PROJECT_DIR$/java-lib/java-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jps-lib/jps-lib.iml" filepath="$PROJECT_DIR$/jps-lib/jps-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jps-plugin/jps-plugin.iml" filepath="$PROJECT_DIR$/jps-plugin/jps-plugin.iml" />
     </modules>
   </component>
 </project>

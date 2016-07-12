@@ -2,18 +2,28 @@ module com.haskforce.frege.lang.parser.FregeParser where
 
 import com.haskforce.frege.bindings.Intellij
 import com.haskforce.frege.lang.parser.Builder
+import com.haskforce.frege.lang.parser.Tokens
 import com.haskforce.frege.utils.Monad
 
 --- Function to be called by Java code to implement the PsiParser
 psiParse :: IElementType -> Mutable s PsiBuilder -> ST s (Mutable s ASTNode)
-psiParse !root !builder = (top root).run builder
+psiParse !root !psiBuilder = builder.run psiBuilder
+ where
+  builder = do
+    mark $ top >> done root
+    getTreeBuilt
 
-top :: IElementType -> Builder s (Mutable s ASTNode)
-top root = do
-  consumeUntilEOF root
-  getTreeBuilt
+top :: Builder s ()
+top = do
+  moduleDecl
+  consumeUntilEOF
 
-consumeUntilEOF root = mark $ do
-  whileM_ (fmap not isEOF) advanceLexer
-  done root
+moduleDecl = whenTokenIs (== ttMODULE) $ mark $ do
+  advanceLexer
+  whenTokenIs (/= ttIDENT) $ builderError "Expected IDENT"
+  advanceLexer
+  whenTokenIs (/= ttWHERE) $ builderError "Expected WHERE"
+  advanceLexer
+  done ttMODULE_DECL
 
+consumeUntilEOF = whileM_ (not <$> isEOF) advanceLexer

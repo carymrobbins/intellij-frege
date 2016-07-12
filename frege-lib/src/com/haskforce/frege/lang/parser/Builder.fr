@@ -48,6 +48,20 @@ isEOF = Builder $ _.eof
 advanceLexer :: Builder s ()
 advanceLexer = Builder $ _.advanceLexer
 
+remapAdvance :: IElementType -> Builder s ()
+remapAdvance el = Builder (_.remapCurrentToken el) >> advanceLexer
+
+getTokenType :: Builder s IElementType
+getTokenType = Builder $ _.getTokenType
+
+whenTokenIs :: (IElementType -> Bool) -> Builder s () -> Builder s ()
+whenTokenIs p b = do
+  el <- getTokenType
+  when (p el) b
+
+builderError :: String -> Builder s ()
+builderError msg = Builder (_.error msg)
+
 --- Lift an ST action into the Builder monad.
 builderFromST :: ST s a -> Builder s a
 builderFromST st = Builder $ \_ -> st

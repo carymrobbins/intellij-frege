@@ -25,6 +25,8 @@ internal lexer and parser as much as possible, which is one goal of this project
 1. Download and copy a [Frege jar](https://github.com/Frege/frege/releases) to the `lib/`
     directory.
 
+1. Generate the Frege parser tokens by running `tools/gen-tokens`
+
 1. Compile Frege sources by running `tools/fregec` with the
    following environment variables -
       * **FREGE_JAR** - (optional) path to Frege jar (defaults to `lib/frege*.jar`)

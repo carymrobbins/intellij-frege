@@ -1,4 +1,4 @@
-package com.haskforce.frege.lang.lexer;
+package com.haskforce.frege.lang.psi;
 
 import com.haskforce.frege.lang.FregeLanguage;
 import com.intellij.psi.tree.IElementType;

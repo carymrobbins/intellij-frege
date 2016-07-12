@@ -1,4 +1,4 @@
-package com.haskforce.frege.lang.lexer;
+package com.haskforce.frege.lang.psi;
 
 import com.intellij.psi.tree.IElementType;
 
@@ -76,4 +76,7 @@ public abstract class FregeTokenTypes {
   public static FregeTokenType EOL = new FregeTokenType("EOL");
   public static FregeTokenType INDENT = new FregeTokenType("INDENT");
   public static FregeTokenType DEDENT = new FregeTokenType("DEDENT");
+
+  // PARSER ELEMENTS
+  public static FregeElementType MODULE_DECL = new FregeElementType("MODULE_DECL");
 }

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+base_dir=$(cd "$(dirname "$0")"/..; pwd)
+src_file=$base_dir/java-lib/src/com/haskforce/frege/lang/psi/FregeTokenTypes.java
+target_file=$base_dir/frege-lib/src/com/haskforce/frege/lang/parser/Tokens.fr
+
+cat <<EOF > "$target_file"
+module com.haskforce.frege.lang.parser.Tokens where
+
+import com.haskforce.frege.bindings.Intellij
+
+EOF
+
+while read line; do
+  if grep 'public static' <<< "$line" >/dev/null; then
+    tok=$(tr -s ' ' <<< "$line" | cut -d ' ' -f 4)
+    # NOTE: Using pipes (|) as a delimiter to create vertical indentation later.
+    echo "pure native tt${tok}|com.haskforce.frege.lang.psi.FregeTokenTypes.${tok}|:: IElementType"
+  elif grep ' *//' <<< "$line" >/dev/null; then
+    sed 's/ *\/\/\(.*\)/--\1/g' <<< "$line"
+  fi
+done < "$src_file" | column -t -s '|' >> "$target_file"

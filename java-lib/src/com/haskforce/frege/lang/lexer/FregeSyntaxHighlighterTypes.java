@@ -1,5 +1,7 @@
 package com.haskforce.frege.lang.lexer;
 
+import com.haskforce.frege.lang.psi.FregeTokenType;
+
 /** Token types for the syntax highlighter. */
 public abstract class FregeSyntaxHighlighterTypes {
   public static FregeTokenType DOC_COMMENT = new FregeTokenType("DOC_COMMENT");

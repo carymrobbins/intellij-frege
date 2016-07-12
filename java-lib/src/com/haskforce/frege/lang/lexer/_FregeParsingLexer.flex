@@ -5,7 +5,7 @@ import java.util.regex.*;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
-import com.haskforce.frege.lang.lexer.FregeTokenTypes;
+import com.haskforce.frege.lang.psi.FregeTokenTypes;
 
 %%
 

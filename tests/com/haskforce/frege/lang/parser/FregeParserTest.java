@@ -7,4 +7,3 @@ public class FregeParserTest extends FregeParserTestBase {
   public void testInvalid00001() { doTest(); }
   public void testNative00001() { doTest(); }
 }
-

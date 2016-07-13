@@ -48,10 +48,7 @@ Here's the long way -
 
 ## Running the Test Suite
 
-Ideally you could do the following -
+Open **FregeTestCase.java**, right-click on the class name, and choose
+  **Run 'FregeTestCase'**
 
-* Open **FregeTestCase.java**, right-click on the class name, and choose
-    **Run 'FregeTestCase'**
-
-However, IntelliJ's test runner doesn't seem to play nice with Frege (see issue #3).
-In the meantime, you can use the `tools/run-tests` script from the command line.
+You can do the same with any of the other test classes.

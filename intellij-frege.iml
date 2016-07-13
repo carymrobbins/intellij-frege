@@ -2,16 +2,6 @@
 <module type="PLUGIN_MODULE" version="4">
   <component name="DevKit.ModuleBuildProperties" url="file://$MODULE_DIR$/resources/META-INF/plugin.xml" />
   <component name="FacetManager">
-    <facet type="IvyIDEA" name="IvyIDEA">
-      <configuration ivyFile="$MODULE_DIR$/ivy.xml" useProjectSettings="false" useCustomIvySettings="false" ivySettingsFile="" onlyResolveSelectedConfigs="true">
-        <configsToResolve>
-          <config>default</config>
-        </configsToResolve>
-        <propertiesSettings>
-          <propertiesFiles includeProjectLevelPropertiesFiles="true" />
-        </propertiesSettings>
-      </configuration>
-    </facet>
     <facet type="Python" name="Python">
       <configuration sdkName="Python 2.7.6 (/usr/bin/python2.7)" />
     </facet>
@@ -25,15 +15,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="IvyIDEA">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.frege-lang/frege/bundles/frege-3.23.422-ga05a487.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="Python 2.7.6 (/usr/bin/python2.7) interpreter library" level="application" />
     <orderEntry type="module" module-name="java-lib" />
     <orderEntry type="module" module-name="frege-bindings" />

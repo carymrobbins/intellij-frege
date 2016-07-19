@@ -31,6 +31,18 @@
     <lang.parserDefinition
         language="Frege"
         implementationClass="com.haskforce.frege.lang.parser.FregeParserDefinition"/>
+
+    <!-- Java interop -->
+    <java.elementFinder implementation="com.haskforce.frege.lang.java.FregeElementFinder"/>
+    <java.shortNamesCache implementation="com.haskforce.frege.lang.java.FregeShortNamesCache"/>
+
+    <!-- Indexes -->
+    <stubIndex implementation="com.haskforce.frege.index.FregeAllClassNameIndex"/>
+    <stubIndex implementation="com.haskforce.frege.index.FregeQualifiedModuleNameIndex"/>
+    <stubIndex implementation="com.haskforce.frege.index.FregeShortModuleNameIndex"/>
+
+    <!-- References -->
+    <psi.referenceContributor implementation="com.haskforce.frege.lang.psi.ref.FregeReferenceContributor"/>
   </extensions>
 
   <actions>

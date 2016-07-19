@@ -26,7 +26,7 @@ public abstract class FregeLexerTestBase extends LexerTestCase {
 
   @Override
   final protected String getDirPath() {
-    return FileUtil.join("tests", "gold", "frege", "parser");
+    return FileUtil.join("testData", "frege", "parser");
   }
 
   public void doTest() {

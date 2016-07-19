@@ -10,8 +10,8 @@ data ASTNode = native com.intellij.lang.ASTNode
 data PsiBuilder = native com.intellij.lang.PsiBuilder where
   native getProject :: Mutable s PsiBuilder -> STMutable s Project
   native advanceLexer :: Mutable s PsiBuilder -> ST s ()
-  native getTokenType :: Mutable s PsiBuilder -> ST s IElementType
-  native lookAhead :: Mutable s PsiBuilder -> Int -> ST s IElementType
+  native getTokenType :: Mutable s PsiBuilder -> ST s (Maybe IElementType)
+  native lookAhead :: Mutable s PsiBuilder -> Int -> ST s (Maybe IElementType)
   native remapCurrentToken :: Mutable s PsiBuilder -> IElementType -> ST s ()
   native mark :: Mutable s PsiBuilder -> STMutable s PsiBuilderMarker
   native error :: Mutable s PsiBuilder -> String -> ST s ()
@@ -30,4 +30,8 @@ data IElementType = pure native com.intellij.psi.tree.IElementType where
   pure native toString :: IElementType -> String
 
 instance Eq IElementType where
+  -- TODO: This might not be needed since we are wrapping IElementType results in Maybe.
   x == y = objEquals x y
+
+instance Show IElementType where
+  show x = x.toString

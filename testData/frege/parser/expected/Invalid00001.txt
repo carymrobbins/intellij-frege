@@ -1,0 +1,12 @@
+Frege file
+  MODULE_DECL
+    PsiElement(MODULE)('module')
+    MODULE_NAME
+      PsiElement(IDENT)('Invalid')
+    PsiErrorElement:Expected WHERE
+      <empty list>
+    PsiElement(IDENT)('wher')
+  PsiElement(EOL)('\n')
+  PsiElement(IDENT)('cats')
+  PsiElement(=)('=')
+  PsiElement(STRING_LITERAL)('"dogs"')

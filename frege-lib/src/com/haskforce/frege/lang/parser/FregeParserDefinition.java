@@ -5,6 +5,7 @@ import com.haskforce.frege.lang.lexer.FregeParsingLexer;
 import com.haskforce.frege.lang.psi.FregeElementFactory;
 import com.haskforce.frege.lang.psi.FregeFile;
 import com.haskforce.frege.lang.psi.FregeTokenTypes;
+import com.haskforce.frege.lang.psi.stubs.FregeFileStubElementType;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
@@ -38,7 +39,7 @@ public class FregeParserDefinition implements ParserDefinition {
 
   @Override
   public IFileElementType getFileNodeType() {
-    return FILE;
+    return FregeFileStubElementType.INSTANCE;
   }
 
   @NotNull

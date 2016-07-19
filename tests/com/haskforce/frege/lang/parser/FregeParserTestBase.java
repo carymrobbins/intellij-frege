@@ -20,7 +20,7 @@ public abstract class FregeParserTestBase extends ParsingTestCase {
 
   @Override
   protected String getTestDataPath() {
-    return FileUtil.join("tests", "gold");
+    return FileUtil.join("testData");
   }
 
   @Override

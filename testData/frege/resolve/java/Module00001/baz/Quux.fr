@@ -1,0 +1,4 @@
+module baz.<resolved>Quux where
+
+spam :: String
+spam = "eggs"

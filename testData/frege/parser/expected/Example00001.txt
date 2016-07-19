@@ -1,7 +1,9 @@
 Frege file
-  PsiElement(MODULE)('module')
-  PsiElement(IDENT)('Main')
-  PsiElement(WHERE)('where')
+  MODULE_DECL
+    PsiElement(MODULE)('module')
+    MODULE_NAME
+      PsiElement(IDENT)('Main')
+    PsiElement(WHERE)('where')
   PsiElement(EOL)('\n')
   PsiElement(IMPORT)('import')
   PsiElement(IDENT)('Data')

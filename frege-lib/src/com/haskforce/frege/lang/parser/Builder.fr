@@ -1,49 +1,55 @@
 module com.haskforce.frege.lang.parser.Builder where
 
+import frege.Prelude hiding (elem)
+import frege.data.Foldable (elem)
+
 import com.haskforce.frege.bindings.Intellij
 import com.haskforce.frege.utils.Monad
 
---- This module introduces a Builder Monad which wraps IntelliJ's PsiBuilder
-
+--- Monadic wrapper around IntelliJ's PsiBuilder.
 data Builder s a = Builder { run :: Mutable s PsiBuilder -> ST s a }
 
 instance Monad (Builder s) where
-
-  pure x = Builder $ \_ -> return x
-
   Builder f >>= g = Builder $ \psiBuilder -> do
     fResult <- f psiBuilder
     let gBuilder = g fResult
     gBuilder.run psiBuilder
 
+  pure x = Builder $ \_ -> return x
+
+--- Signal to complete a marked section.
 data MarkResult
   = MarkDone IElementType
   | MarkCollapse IElementType
   | MarkError String
 
---- Monadic variants of PsiBuilderMarker methods.
-
+--- Start a marked section for building a node.
 markStart :: Builder s (MarkResult, a) -> Builder s a
 markStart (Builder f) = Builder $ \b -> do
   psiMarker <- b.mark
   (markResult, parseResult) <- f b
   handleResult psiMarker markResult
   return parseResult
- where
+  where
+  handleResult :: (Mutable s PsiBuilderMarker) -> MarkResult -> ST s ()
   handleResult psiMarker markResult = case markResult of
     MarkDone el -> psiMarker.done el
     MarkCollapse el -> psiMarker.collapse el
     MarkError msg -> psiMarker.error msg
 
+--- Complete a marked section with a successful node.
 markDone :: Monad m => IElementType -> m (MarkResult, ())
 markDone el = return (MarkDone el, ())
 
+--- Complete a marked section with a successful collapsed element.
+markCollapse :: Monad m => IElementType -> m (MarkResult, ())
+markCollapse el = return (MarkCollapse el, ())
+
+--- Complete a marked section with an error message.
 markError :: Monad m => String -> m (MarkResult, ())
 markError msg = return (MarkError msg, ())
 
---- Monadic variants of PsiBuilder methods.
-
-lookAhead :: Int -> Builder s IElementType
+lookAhead :: Int -> Builder s (Maybe IElementType)
 lookAhead n = Builder $ _.lookAhead n
 
 getTreeBuilt :: Builder s (Mutable s ASTNode)
@@ -58,13 +64,22 @@ advanceLexer = Builder $ _.advanceLexer
 remapAdvance :: IElementType -> Builder s ()
 remapAdvance el = Builder (_.remapCurrentToken el) >> advanceLexer
 
-getTokenType :: Builder s IElementType
+--- Get the token at the current position.
+getTokenType :: Builder s (Maybe IElementType)
 getTokenType = Builder $ _.getTokenType
 
-expectTokenAdvance :: IElementType -> Builder s Bool
-expectTokenAdvance el =
-  expectAdvance ((el ==) <$> getTokenType) $ "Expected " ++ el.toString
+--- Get the current and next token from the current position.
+getTokens2 :: Builder s (Maybe IElementType, Maybe IElementType)
+getTokens2 = do
+  (,) <$> getTokenType <*> lookAhead 1
 
+--- Get the current and next 2 tokens from the current position.
+getTokens3 :: Builder s (Maybe IElementType, Maybe IElementType, Maybe IElementType)
+getTokens3 = do
+  (,,) <$> getTokenType <*> lookAhead 1 <*> lookAhead 2
+
+--- Expect the predicate to succeed, otherwise report
+--- an error. Advance the lexer in either case.
 expectAdvance :: Builder s Bool -> String -> Builder s Bool
 expectAdvance p msg = do
   x <- p
@@ -72,19 +87,49 @@ expectAdvance p msg = do
   advanceLexer
   return x
 
+--- Expect the supplied element at the current position, reporting
+--- an error otherwise. Advance the lexer in either case.
+expectTokenAdvance :: IElementType -> Builder s Bool
+expectTokenAdvance el =
+  expectAdvance ((el `elem`) <$> getTokenType) $ "Expected " ++ el.toString
+
+--- Continuously advance the lexer until the EOF is reached or the
+--- preduce returns false, running the supplied Builder action before
+--- each advance.
 advanceWhile :: Builder s Bool -> Builder s () -> Builder s ()
 advanceWhile p b = whileM_ pred $ b >> advanceLexer
- where
+  where
   pred = do
     eof <- isEOF
     x <- p
     return $ not eof && x
 
-whenTokenIs :: (IElementType -> Bool) -> Builder s () -> Builder s ()
-whenTokenIs p b = do
-  el <- getTokenType
-  when (p el) b
+unzipMaybeTup2 :: (Maybe a, Maybe b) -> Maybe (a, b)
+unzipMaybeTup2 (mx, my) = (,) <$> mx <*> my
 
+unzipMaybeTup3 :: (Maybe a, Maybe b, Maybe c) -> Maybe (a, b, c)
+unzipMaybeTup3 (mx, my, mz) = (,,) <$> mx <*> my <*> mz
+
+-- 'when' combinator with the predicate supplied as a Builder.
+whenBuilder :: Builder s Bool -> Builder s () -> Builder s ()
+whenBuilder pred b = do
+  p <- pred
+  when p b
+
+whenTokenIs :: (IElementType -> Bool) -> Builder s () -> Builder s ()
+whenTokenIs p b = whenBuilder ((maybe false p) <$> getTokenType) b
+  where
+  pred = do
+    x <- getTokenType
+    return
+
+when2TokensAre :: ((IElementType, IElementType) -> Bool) -> Builder s () -> Builder s ()
+when2TokensAre p b = whenBuilder ((maybe false p . unzipMaybeTup2) <$> getTokens2) b
+
+when3TokensAre :: ((IElementType, IElementType, IElementType) -> Bool) -> Builder s () -> Builder s ()
+when3TokensAre p b = whenBuilder ((maybe false p . unzipMaybeTup3) <$> getTokens3) b
+
+-- Indicate a parse error at the current location.
 builderError :: String -> Builder s ()
 builderError msg = Builder (_.error msg)
 

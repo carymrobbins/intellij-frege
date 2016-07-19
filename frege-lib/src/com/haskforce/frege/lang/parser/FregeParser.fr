@@ -8,7 +8,7 @@ import com.haskforce.frege.utils.Monad
 --- Function to be called by Java code to implement the PsiParser
 psiParse :: IElementType -> Mutable s PsiBuilder -> ST s (Mutable s ASTNode)
 psiParse !root !psiBuilder = builder.run psiBuilder
- where
+  where
   builder = do
     markStart $ top >> markDone root
     getTreeBuilt
@@ -18,25 +18,30 @@ top = do
   consumeUntilEOF
 
 parseModuleDecl = whenTokenIs (== ttMODULE) $ markStart $ do
+  x <- getTokenType
   advanceLexer
   parseModulePackage
   parseModuleName
   expectTokenAdvance ttWHERE
   markDone ttMODULE_DECL
 
-parseModulePackage = markStart $ do
-  advanceWhile pred advanceLexer
-  markDone ttMODULE_PACKAGE
- where
-  pred = do
-    x <- getTokenType
-    y <- lookAhead 1
-    return $ (x, y) == (ttIDENT, ttDOT)
+parseModulePackage = do
+  when2TokensAre (== (ttIDENT, ttDOT)) $ do
+    markStart $ do
+      advanceLexer
+      loop
+      markDone ttMODULE_PACKAGE
+    whenTokenIs (== ttDOT) advanceLexer
+  where
+  loop = when3TokensAre (== (ttDOT, ttIDENT, ttDOT)) $ do
+    advanceLexer
+    advanceLexer
+    loop
 
 parseModuleName = markStart $ do
   t <- getTokenType
   advanceLexer
-  if t /= ttIDENT then
+  if t /= Just ttIDENT then
     markError "Expected module name"
   else
     markDone ttMODULE_NAME

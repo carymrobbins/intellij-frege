@@ -8,9 +8,7 @@ HaskForce itself to be written in Frege.
 Note that there seems to be an
 [existing Frege plugin](https://github.com/Dierk/frege-idea-plugin)
 in the works.  Hopefully, if this experiment proves a success, we can merge the two
-projects together.  Note that as of this writing, the existing Frege plugin appears
-to implement its own lexer and parser; ideally, we should be able to reuse Frege's
-internal lexer and parser as much as possible, which is one goal of this project.
+projects together.
 
 ## Building
 

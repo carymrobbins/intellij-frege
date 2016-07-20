@@ -13,4 +13,7 @@ public abstract class FregeIndexKeys {
 
   public static final StubIndexKey<String, PsiClass> ALL_CLASS_NAMES =
     StubIndexKey.createIndexKey("frege.all.class.names");
+
+  public static final StubIndexKey<String, PsiClass> CLASSES_IN_PACKAGES =
+    StubIndexKey.createIndexKey("frege.classes.in.packages");
 }

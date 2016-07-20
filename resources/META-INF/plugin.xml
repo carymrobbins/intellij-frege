@@ -40,6 +40,7 @@
     <stubIndex implementation="com.haskforce.frege.index.FregeAllClassNameIndex"/>
     <stubIndex implementation="com.haskforce.frege.index.FregeQualifiedModuleNameIndex"/>
     <stubIndex implementation="com.haskforce.frege.index.FregeShortModuleNameIndex"/>
+    <stubIndex implementation="com.haskforce.frege.index.FregeClassesInPackageIndex"/>
 
     <!-- References -->
     <psi.referenceContributor implementation="com.haskforce.frege.lang.psi.ref.FregeReferenceContributor"/>

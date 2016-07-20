@@ -57,6 +57,6 @@ public class FregeModuleNameStubElementType
     sink.occurrence(FregeIndexKeys.MODULE_QUALIFIED_NAMES, stub.getQualifiedName());
     sink.occurrence(FregeIndexKeys.MODULE_SHORT_NAMES, stub.getName());
     sink.occurrence(FregeIndexKeys.ALL_CLASS_NAMES, stub.getName());
-    sink.occurrence(JavaStubIndexKeys.CLASS_FQN, stub.getQualifiedName().hashCode());
+    sink.occurrence(FregeIndexKeys.CLASSES_IN_PACKAGES, stub.getPackageName());
   }
 }

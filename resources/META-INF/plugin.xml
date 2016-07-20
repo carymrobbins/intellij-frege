@@ -48,6 +48,11 @@
 
   <actions>
     <!-- Add your actions here -->
+    <action id="com.haskforce.frege.actions.CreateFregeFileAction"
+            class="com.haskforce.frege.actions.CreateFregeFileAction"
+            text="Frege File">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+    </action>
   </actions>
 
 </idea-plugin>

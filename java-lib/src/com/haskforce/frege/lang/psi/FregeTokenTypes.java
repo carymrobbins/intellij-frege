@@ -80,6 +80,7 @@ public abstract class FregeTokenTypes {
 
   // PARSER ELEMENTS
   public static IElementType MODULE_DECL = new FregeElementType("MODULE_DECL");
+  public static IElementType MODULE_REF = new FregeElementType("MODULE_REF");
   public static IElementType MODULE_PACKAGE = new FregeElementType("MODULE_PACKAGE");
   public static IElementType MODULE_NAME = new FregeModuleNameStubElementType("MODULE_NAME");
 }

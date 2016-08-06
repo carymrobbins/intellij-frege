@@ -33,6 +33,13 @@ public class FregeModuleName
     super(node);
   }
 
+  @NotNull
+  public FregeModuleRef getModuleRef() {
+    PsiElement el = getParent();
+    if (el instanceof FregeModuleRef) return (FregeModuleRef) el;
+    throw new AssertionError("Expected FregeModuleRef, got: " + el.getClass());
+  }
+
   @Override
   public String getName() {
     return getText();
@@ -41,14 +48,13 @@ public class FregeModuleName
   @NotNull
   @Override
   public String getQualifiedName() {
-    return FregePsiUtil.getModulePackage(this).map(x -> x.getText() + ".").orElse("") + getName();
+    return getModuleRef().getText();
   }
 
   @Nullable
   public String getPackageName() {
-    PsiElement pkg = getParent().getFirstChild();
-    if (pkg == null || !(pkg instanceof FregeModulePackage)) return null;
-    return pkg.getText();
+    PsiElement pkg = getModuleRef().getModulePackage();
+    return pkg == null ? null : pkg.getText();
   }
 
   @Override

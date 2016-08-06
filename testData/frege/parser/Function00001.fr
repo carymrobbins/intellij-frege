@@ -1,0 +1,10 @@
+module Function00001 where
+
+foo :: Int -> Int -> Int
+foo x y = x + y
+
+bar :: Float -> String -> (Float, String)
+bar = (,)
+
+baz :: (a -> b) -> (b -> c) -> (a -> c)
+baz f g x = f $ g $ x

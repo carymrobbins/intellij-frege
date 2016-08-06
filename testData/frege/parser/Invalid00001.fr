@@ -1,3 +1,0 @@
-module Invalid wher
-
-cats = "dogs"

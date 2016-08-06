@@ -2,11 +2,12 @@ Frege file
   PsiComment(LINE_COMMENT)('-- http://stackoverflow.com/questions/33788002/is-it-possible-to-use-frege-with-play-framework\n')
   MODULE_DECL
     PsiElement(MODULE)('module')
-    MODULE_PACKAGE
-      PsiElement(IDENT)('helloplay')
-    PsiElement(.)('.')
-    MODULE_NAME
-      PsiElement(IDENT)('FregeApplication')
+    MODULE_REF
+      MODULE_PACKAGE
+        PsiElement(IDENT)('helloplay')
+      PsiElement(.)('.')
+      MODULE_NAME
+        PsiElement(IDENT)('FregeApplication')
     PsiElement(WHERE)('where')
   PsiElement(EOL)('\n')
   PsiElement(IMPORT)('import')

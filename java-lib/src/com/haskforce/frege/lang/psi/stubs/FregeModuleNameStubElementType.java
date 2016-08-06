@@ -4,7 +4,6 @@ import com.haskforce.frege.index.FregeIndexKeys;
 import com.haskforce.frege.lang.psi.FregeTokenTypes;
 import com.haskforce.frege.lang.psi.impl.FregeModuleName;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.impl.java.stubs.index.JavaStubIndexKeys;
 import com.intellij.psi.stubs.IndexSink;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
@@ -30,7 +29,7 @@ public class FregeModuleNameStubElementType
   @Override
   public boolean shouldCreateStub(ASTNode node) {
     // Only create the stub if we are in a declaration.
-    return node.getTreeParent().getElementType() == FregeTokenTypes.MODULE_DECL;
+    return node.getTreeParent().getTreeParent().getElementType() == FregeTokenTypes.MODULE_DECL;
   }
 
   @Override

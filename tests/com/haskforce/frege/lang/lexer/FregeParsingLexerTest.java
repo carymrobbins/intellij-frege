@@ -22,8 +22,8 @@ public class FregeParsingLexerTest extends FregeLexerTestBase {
     return new FregeParsingLexer();
   }
 
+  public void testError00001() { doTest(); }
   public void testExample00001() { doTest(); }
   public void testExample00002() { doTest(); }
-  public void testInvalid00001() { doTest(); }
   public void testNative00001() { doTest(); }
 }

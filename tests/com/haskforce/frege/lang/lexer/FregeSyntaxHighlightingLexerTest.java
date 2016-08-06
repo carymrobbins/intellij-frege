@@ -24,8 +24,9 @@ public class FregeSyntaxHighlightingLexerTest
     return new FregeSyntaxHighlightingLexer();
   }
 
+  public void testError00001() { doTest(); }
+  public void testError00002() { doTest(); }
   public void testExample00001() { doTest(); }
   public void testExample00002() { doTest(); }
-  public void testInvalid00001() { doTest(); }
   public void testNative00001() { doTest(); }
 }

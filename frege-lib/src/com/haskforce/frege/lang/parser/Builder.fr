@@ -111,22 +111,19 @@ unzipMaybeTup3 :: (Maybe a, Maybe b, Maybe c) -> Maybe (a, b, c)
 unzipMaybeTup3 (mx, my, mz) = (,,) <$> mx <*> my <*> mz
 
 -- 'when' combinator with the predicate supplied as a Builder.
-whenBuilder :: Builder s Bool -> Builder s () -> Builder s ()
+whenBuilder :: Builder s Bool -> Builder s () -> Builder s Bool
 whenBuilder pred b = do
   p <- pred
   when p b
+  return p
 
-whenTokenIs :: (IElementType -> Bool) -> Builder s () -> Builder s ()
+whenTokenIs :: (IElementType -> Bool) -> Builder s () -> Builder s Bool
 whenTokenIs p b = whenBuilder ((maybe false p) <$> getTokenType) b
-  where
-  pred = do
-    x <- getTokenType
-    return
 
-when2TokensAre :: ((IElementType, IElementType) -> Bool) -> Builder s () -> Builder s ()
+when2TokensAre :: ((IElementType, IElementType) -> Bool) -> Builder s () -> Builder s Bool
 when2TokensAre p b = whenBuilder ((maybe false p . unzipMaybeTup2) <$> getTokens2) b
 
-when3TokensAre :: ((IElementType, IElementType, IElementType) -> Bool) -> Builder s () -> Builder s ()
+when3TokensAre :: ((IElementType, IElementType, IElementType) -> Bool) -> Builder s () -> Builder s Bool
 when3TokensAre p b = whenBuilder ((maybe false p . unzipMaybeTup3) <$> getTokens3) b
 
 -- Indicate a parse error at the current location.

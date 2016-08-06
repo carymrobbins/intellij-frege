@@ -1,0 +1,13 @@
+module com.haskforce.frege.Example where
+
+foo :: Int -> Float -> (Int, Float)
+foo x y = (x, y)
+
+bar :: IO ()
+bar = println "foo"
+
+baz :: ()
+baz = ()
+
+quux :: Int -> Int -> Int
+quux = (+)

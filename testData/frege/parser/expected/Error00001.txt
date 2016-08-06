@@ -1,8 +1,9 @@
 Frege file
   MODULE_DECL
     PsiElement(MODULE)('module')
-    MODULE_NAME
-      PsiElement(IDENT)('Invalid')
+    MODULE_REF
+      MODULE_NAME
+        PsiElement(IDENT)('Error00001')
     PsiErrorElement:Expected WHERE
       <empty list>
     PsiElement(IDENT)('wher')

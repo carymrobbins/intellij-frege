@@ -20,10 +20,15 @@ top = do
 parseModuleDecl = whenTokenIs (== ttMODULE) $ markStart $ do
   x <- getTokenType
   advanceLexer
-  parseModulePackage
-  parseModuleName
+  parseModuleRef
   expectTokenAdvance ttWHERE
   markDone ttMODULE_DECL
+
+parseModuleRef = do
+  markStart $ do
+    parseModulePackage
+    success <- parseModuleName
+    if success then markDone ttMODULE_REF else markError "Expected module"
 
 parseModulePackage = do
   when2TokensAre (== (ttIDENT, ttDOT)) $ do
@@ -31,19 +36,15 @@ parseModulePackage = do
       advanceLexer
       loop
       markDone ttMODULE_PACKAGE
-    whenTokenIs (== ttDOT) advanceLexer
+    void $ whenTokenIs (== ttDOT) advanceLexer
   where
   loop = when3TokensAre (== (ttDOT, ttIDENT, ttDOT)) $ do
     advanceLexer
     advanceLexer
-    loop
+    void $ loop
 
-parseModuleName = markStart $ do
-  t <- getTokenType
+parseModuleName = whenTokenIs (== ttIDENT) $ markStart $ do
   advanceLexer
-  if t /= Just ttIDENT then
-    markError "Expected module name"
-  else
-    markDone ttMODULE_NAME
+  markDone ttMODULE_NAME
 
 consumeUntilEOF = advanceWhile (return true) $ return ()
